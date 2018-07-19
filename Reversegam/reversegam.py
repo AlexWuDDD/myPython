@@ -10,10 +10,10 @@ def drawBoard(board):
     print('  12345678')
     print(' +--------+')
     for y in range(HEIGHT):
-        print('%s|' %(y+1), end='')
+        print('%s|' % (y+1), end='')
         for x in range(WIDTH):
             print(board[x][y], end='')
-        print('|%s' %(y+1))
+        print('|%s' % (y+1))
     print(' +--------+')
     print('  12345678')
 
@@ -28,7 +28,7 @@ def getNewBoard():
 
 
 def isOnBoard(x, y):
-    return x>=0 and y<=WIDTH-1 and y>=0 and y<=HEIGHT-1
+    return x>=0 and x<= (WIDTH-1) and y>=0 and y<= (HEIGHT-1)
 
 
 def isValidMove(board, tile, xstart, ystart):
@@ -52,6 +52,7 @@ def isValidMove(board, tile, xstart, ystart):
             # Keep moving in the x & y direction
             x += xdirection
             y += ydirection
+            print(x, y, isOnBoard(x, y))
             if isOnBoard(x, y) and board[x][y] == tile:
                 # There are pieces to flip over. Go in the reverse direction until we reach the original space,
                 # nothing all the tiles along the way
@@ -64,7 +65,7 @@ def isValidMove(board, tile, xstart, ystart):
 
     if len(tilesToFlip) == 0: # if no tiles were flipped, this is not a valid move.
         return False
-    return tilesToFlip
+    return tilesToFlip # 返回的是这一步棋后，需要翻转的棋子的坐标
 
 
 def getBoardCopy(board):
@@ -83,6 +84,7 @@ def getValidMoves(board, tile):
     validMoves = []
     for x in range(WIDTH):
         for y in range(HEIGHT):
+            #print(x, y)
             if isValidMove(board, tile, x, y) != False:
                 validMoves.append([x, y])
     return validMoves
@@ -229,7 +231,60 @@ def playGame(playerTile, computerTile):
         elif turn == 'player': # Player's turn
             if playerValidMoves != []:
                 if showHints:
-                    validMovesBoard = getBoardWithValidMoves(board,)
+                    validMovesBoard = getBoardWithValidMoves(board, playerTile)
+                    drawBoard(validMovesBoard)
+                else:
+                    drawBoard(board)
+                printScore(board, playerTile, computerTile)
+
+                move = getPlayerMove(board, playerTile)
+                if move == 'quit':
+                    print('Thanks for playing!')
+                    sys.exit() # Terminate the program.
+                elif move == 'hints':
+                    showHints = not showHints
+                    continue
+                else:
+                    makeMove(board, playerTile, move[0], move[1])
+            turn = 'computer'
+
+        elif turn == 'computer': # Computer's run
+            if computerValidMoves != []:
+                drawBoard(board)
+                printScore(board, playerTile, computerTile)
+
+                input('Press Enter to see the computer\'s move')
+                move = getComputerMove(board, computerTile)
+                makeMove(board, computerTile, move[0], move[1])
+            turn = 'player'
+
+
+print('Welcome to Reversegam!')
+
+playTile, computerTile = enterPlayerTile()
+
+while True:
+    findBoard = playGame(playTile, computerTile)
+
+    # Display the final score.
+    drawBoard(findBoard)
+    scores = getScoreOfBoard(findBoard)
+
+    print('X scored %s points. O scored %s points.' % (scores['X'], scores['O']))
+
+    if scores[playTile] > scores[computerTile]:
+        print('You beat the computer by %s points! Congratulations!' % (scores[playTile] - scores[computerTile]))
+    elif scores[playTile] < scores[computerTile]:
+        print('You lost. The computer beat you by %s points' % (scores[computerTile] - scores[playTile]))
+    else:
+        print('The game was a tie!')
+
+    print('Do you want to play again? (yes or no)')
+    if not input().lower().startswith('y'):
+        break
+
+
+
 
 
 

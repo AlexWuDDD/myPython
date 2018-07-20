@@ -21,9 +21,8 @@ def drawBoard(board):
 def getNewBoard():
     # Create a brand-new, blank board data structure
     board = []
-    items = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
     for i in range(WIDTH):
-        board.append(items)
+        board.append([' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '])
     return board
 
 
@@ -52,7 +51,7 @@ def isValidMove(board, tile, xstart, ystart):
             # Keep moving in the x & y direction
             x += xdirection
             y += ydirection
-            print(x, y, isOnBoard(x, y))
+            # print(x, y, isOnBoard(x, y))
             if isOnBoard(x, y) and board[x][y] == tile:
                 # There are pieces to flip over. Go in the reverse direction until we reach the original space,
                 # nothing all the tiles along the way
@@ -171,7 +170,9 @@ def getPlayerMove(board, playerTile):
         if len(move) == 2 and move[0] in DIGITS1TO8 and move[1] in DIGITS1TO8:
             x = int(move[0]) - 1
             y = int(move[1]) - 1
+            #print(x, y)
             if isValidMove(board, playerTile, x, y) == False:
+                #print("is false")
                 continue
             else:
                 break
@@ -195,7 +196,7 @@ def getComputerMove(board, computerTile):
 
     # Find the highest-scoring move possible.
     bestScore = -1
-    bestMove = []
+
     for x, y in possibleMoves:
         boardCopy = getBoardCopy(board)
         makeMove(boardCopy, computerTile, x, y)
@@ -208,7 +209,7 @@ def getComputerMove(board, computerTile):
 
 def printScore(board, playtile, computerTile):
     scores = getScoreOfBoard(board)
-    print('You: %s points. Computer: %s points' %(scores[playtile], scores[computerTile]))
+    print('You: %s points. Computer: %s points' % (scores[playtile], scores[computerTile]))
 
 def playGame(playerTile, computerTile):
     showHints = False
@@ -217,6 +218,7 @@ def playGame(playerTile, computerTile):
 
     # Clear the board and place starting pieces.
     board = getNewBoard()
+
     board[3][3] = 'X'
     board[3][4] = 'O'
     board[4][3] = 'O'
@@ -227,7 +229,7 @@ def playGame(playerTile, computerTile):
         computerValidMoves = getValidMoves(board, computerTile)
 
         if playerValidMoves == [] and computerValidMoves == []:
-            return board # No one can move, so end the game
+            return board  # No one can move, so end the game
         elif turn == 'player': # Player's turn
             if playerValidMoves != []:
                 if showHints:
@@ -238,6 +240,7 @@ def playGame(playerTile, computerTile):
                 printScore(board, playerTile, computerTile)
 
                 move = getPlayerMove(board, playerTile)
+                #print(move)
                 if move == 'quit':
                     print('Thanks for playing!')
                     sys.exit() # Terminate the program.

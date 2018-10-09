@@ -28,3 +28,22 @@ myList = [2, 4, 6]
 print(count(myList))
 myList = [2, 4, 6]
 print(max(myList))
+
+
+print("====================")
+voted = {}
+
+
+def check_voter(name):
+    if voted.get(name):
+        print("kick them out")
+    else:
+        voted[name] = True
+        print("let him/her voted")
+
+
+check_voter("tom")
+check_voter("mike")
+check_voter("mike")
+
+
